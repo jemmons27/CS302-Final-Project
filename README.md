@@ -3,14 +3,21 @@
 
 Simulates the evolution of randomly-generated soft-bodied robots toward optimizing velocity.
 
+## Summary/Preview
+https://youtu.be/N4stPvvN5hE
+
+https://github.com/user-attachments/assets/0dc8e478-4457-4133-87fb-7bdcbedd0163
+
 ## How to Use
 control.py serves as a low-fidelity frontend interface for controlling the simulation. After running it you are presented with 3 input options
 
 0 - Generates an initial generation with n nodes for x generations
 This option deletes any data stored from previous robots
 
+
 1 - Mutates the stored robot by generating x mutants with n+1 nodes, where n is the number of nodes of the stored robot
 This option adds a node to the stored robot, and an entry to the stored losses
+
 
 2 - Views the stored robot and optimizes its velocity over i iterations, and plots the stored losses, if they exist.
 
