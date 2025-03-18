@@ -715,7 +715,7 @@ def main():
     
     winners = [] ##Throwaway variable for go
     nodes = 6 ##Nodes for the initial robot is set manually here
-    options.mutate=True
+    #options.mutate=True
    ##Base Robot generation
     if (options.mutate is False) and (options.view is False): 
         generate(nodes, winners, options.iters, allocate=True)
