@@ -9,7 +9,7 @@ import matplotlib.pyplot as plt
 ##Robots, losses = run init gen
 
 def initial_generation():
-    result = subprocess.run([sys.executable, "difftaichi-master/examples/diffmpm.py"], capture_output=True, text=True) 
+    result = subprocess.run([sys.executable, "diffmpm.py"], capture_output=True, text=True) 
 #print(result)
     output = result.stdout.strip()
     mutations = 2
@@ -20,10 +20,10 @@ def initial_generation():
         lines = output.split("\n")
         print(lines)
         losses_over_generation = []
-        original_robot_loss = lines[2] ##Loss is printed first
+        original_robot_loss = lines[-2]##Loss is printed first
         og_loss = ast.literal_eval(original_robot_loss)
         losses_over_generation.append(og_loss)
-        original_robot = lines[3] ##Robot printed second
+        original_robot = lines[-1]#Robot printed second
         original_robot = ast.literal_eval(original_robot)
         print(original_robot_loss, original_robot)
     
@@ -51,7 +51,7 @@ def initial_generation():
 def mutation():
 
     
-    result = subprocess.run([sys.executable, "-u", "difftaichi-master/examples/diffmpm.py", "-mutate"], capture_output=True, text=True)
+    result = subprocess.run([sys.executable, "-u", "diffmpm.py", "-mutate"], capture_output=True, text=True)
     output = result.stdout.strip()
     print(result.stderr)
     lines = output.split("\n")
@@ -86,16 +86,17 @@ def mutation():
 
 def view():
     ##See initial generation
-    result = subprocess.run([sys.executable, "-u", "difftaichi-master/examples/diffmpm.py", "-view"], capture_output=True, text=True)
-    return
+    result = subprocess.run([sys.executable, "-u", "diffmpm.py", "-view"], capture_output=True, text=True)
+    
     with open('loss_storage.json', 'r') as f:
         list = json.load(f)
+    if list:
         print(list)
-    plt.title("Mutants")
-    plt.ylabel("Loss")
-    plt.xlabel("Generation")
-    plt.plot(list)
-    plt.show()
+        plt.title("Mutants")
+        plt.ylabel("Loss")
+        plt.xlabel("Generation")
+        plt.plot(list)
+        plt.show()
         
     
     
@@ -106,14 +107,21 @@ def main():
     ## To clear previous robots and generate an inital population, set val = 1
     ## To generate a mutation of the previous population, set val = 0
     ## To view the robot created, set val = 2
-    val = 2
-    if val == 1:
+    
+    print("\n\n0: Initial generation, this will overwrite any existing data")
+    print("1: Mutation")
+    print("2: View\n")
+    val = int(input(">>"))
+    if val != 0 and val != 1 and val != 2:
+        print('Invalid Input -- Returning')
+        return
+    if val == 0:
         with open('robotstorage.json', 'w') as f:
             f.truncate(0)
         with open('loss_storage.json', 'w') as f:
             f.truncate(0)
         initial_generation()
-    elif val==0:
+    elif val==1:
         mutation()
     elif val==2:
         view()
@@ -124,17 +132,11 @@ def main():
         
 if __name__ == "__main__":
     main()
- 
-# fourth mutation
 
    
 ### \nBest Loss: x\n
 ### \nBest Robot: x\n
 
 
-#result = subprocess.call([sys.executable, "difftaichi-master/examples/diffmpm.py"])# Here I am running main file, which prints the losses and whatever else I need to save. 
-#result = subprocess.run([sys.executable, "difftaichi-master/examples/diffmpm.py"], capture_output=True, text=True) 
-#print('ran')
-# Then I am parsing/translating the output from rigid_body.py..
     
  
