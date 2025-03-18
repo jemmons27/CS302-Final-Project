@@ -111,7 +111,7 @@ def main():
     print("\n\n0: Initial generation, this will overwrite any existing data")
     print("1: Mutation")
     print("2: View\n")
-    val = int(input(">>"))
+    val = int(input(">> "))
     if val != 0 and val != 1 and val != 2:
         print('Invalid Input -- Returning')
         return

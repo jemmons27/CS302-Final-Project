@@ -456,7 +456,7 @@ class Scene:
         return directions
     
     
-    def generate_snake(self, r):
+    def generate_robot(self, r):
         ##Generate an initial robot
         ##Starting Params
         x = .25
@@ -464,12 +464,10 @@ class Scene:
         w = .07
         h = .07
         self.graph = []
-        self.nx = nx.barbell_graph(2, 3)
+        #self.nx = nx.barbell_graph(2, 3)
         act = 1
         ####################################
         for i in range(r):
-            base_seed = rand.randint(10000, 5000000) / ((i ** 7) * math.log(i + 10) + 5)
-            rand.seed(base_seed)
             ##Seed generation to improve randomness
             if i == 0:
                 ##If first node, just add shape
@@ -580,11 +578,11 @@ def visualize(s, folder):
     os.makedirs(folder, exist_ok=True)
     gui.show(f'{folder}/{s:04d}.png')
 
-def go(r, robots, iters, allocate=False, mutation=False):
+def generate(r, robots, iters, allocate=False, mutation=False):
     ##Initial generation and initializing fields 
     scene = Scene()
     scene.set_offset(0.02, 0.03)
-    scene.generate_snake(r) ##Generate random robot with r nodes
+    scene.generate_robot(r) ##Generate random robot with r nodes
     scene.finalize()
     #Runnning velocity loss function below
     if allocate:
@@ -625,7 +623,6 @@ def go(r, robots, iters, allocate=False, mutation=False):
     return robots, l
         
 def rebuild_and_mutate(robot, iters, mutants, r):
-    #print("rebuild and mutate")
     scene = Scene()
     scene.set_offset(0.02, 0.03)
     scene.graph = []
@@ -718,16 +715,16 @@ def main():
     
     winners = [] ##Throwaway variable for go
     nodes = 6 ##Nodes for the initial robot is set manually here
-    #options.mutate=True
+    options.mutate=True
    ##Base Robot generation
     if (options.mutate is False) and (options.view is False): 
-        go(nodes, winners, options.iters, allocate=True)
+        generate(nodes, winners, options.iters, allocate=True)
         generations = 10
         ##How many robots to generate
         robots = []
         initial_pop_losses = []
         for i in range(generations):
-            robots, l = go(nodes, robots, options.iters) #Generate Robot
+            robots, l = generate(nodes, robots, options.iters) #Generate Robot
             initial_pop_losses.append(l) #Record Loss
         
         best = 0
@@ -743,7 +740,7 @@ def main():
         with open('robotstorage.json', 'r') as f:
             base_robot = json.load(f) ##Load base_robot
         nodes = len(base_robot) + 1 #Add node
-        go(nodes, mutants, options.iters, allocate=True) ## initialization call for allocate_fields
+        generate(nodes, mutants, options.iters, allocate=True) ## initialization call for allocate_fields
         mutations = 10 ##How many mutants to generate
         mutants = []
         mutated_losses = []
@@ -767,7 +764,7 @@ def main():
         with open('robotstorage.json', 'r') as f:
             base_robot = json.load(f)
         nodes = len(base_robot)
-        go(nodes, tmp, 10, allocate=True)
+        generate(nodes, tmp, 10, allocate=True)
         view(base_robot, 50)
          
 
